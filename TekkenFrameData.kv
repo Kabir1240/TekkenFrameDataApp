@@ -32,48 +32,81 @@
         orientation:'vertical'
         SyncedScrollView:
             id:header_scrollview
-            size_hint_y:.1
-            GridLayout:
-                cols:8
-                rows:1
-                size_hint_x:2
+            size_hint_y:0.1
+            BoxLayout:
+                spacing:"50dp"
+                size_hint_x:None
+                minimum_width: self.parent.width
+                width: self.minimum_width
+                padding:"50dp",0,"50dp",0
                 Label:
                     text:"Command"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Hit Level"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Damage"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Startup"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Block"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Hit"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Counter Hit"
+                    size_hint_x:None
+                    width:"100"
+                    text_size:(100, None)
+                    halign:'center'
+                    valign:'center'
                 Label:
                     text:"Notes"
+                    size_hint_x:None
+                    width:300
+                    text_size:(300, None)
+                    halign:'center'
+                    valign:'center'
 
         SyncedScrollView:
             id:content_scrollview
             size_hint_y:.9
             GridLayout:
+                id:content_grid
                 cols:8
-                rows:1
-                size_hint_x:2
-                Label:
-                    text:"Command"
-                Label:
-                    text:"Hit Level"
-                Label:
-                    text:"Damage"
-                Label:
-                    text:"Startup"
-                Label:
-                    text:"Block"
-                Label:
-                    text:"Hit"
-                Label:
-                    text:"Counter Hit"
-                Label:
-                    text:"Notes"
+                padding:"50dp","50dp","50dp","50dp"
+                spacing:"50dp"
+                size_hint_x:None
+                size_hint_y:None
+                minimum_width:self.parent.width
+                width:self.minimum_width
+                minimum_height:self.parent.height
+                height:self.minimum_height
