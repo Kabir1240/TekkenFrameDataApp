@@ -8,20 +8,24 @@ from kivy.uix.label import Label
 from kivy.properties import StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
 
 TEKKEN_DOCS = TekkenDocs()
 
-
+class SyncedScrollView(ScrollView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.sync_view = None
+    
+    def on_scroll_move(self, touch):
+        if self.sync_view:
+            self.sync_view.scroll_x = self.scroll_x
+        super().on_scroll_move(touch)
+            
 class ImageButton(ButtonBehavior, AsyncImage):
     pass
 
-class TekkenGridLayout(GridLayout):
-    def __init__(self,**kwargs):
-        super().__init__(**kwargs)
-        self.cols=3
-        self.padding=[0,0,0,0]
-        self.spacing=10
-    
+class CharacterIconLayout(GridLayout):
     def on_kv_post(self, base_widget):
         super().on_kv_post(base_widget)
         
@@ -33,7 +37,7 @@ class TekkenGridLayout(GridLayout):
             link = character["link"]
             
             # create box layout
-            new_box_layout = BoxLayout(orientation="vertical")
+            new_box_layout = BoxLayout(orientation="vertical", size_hint=(.1,.1))
             
             # create and add character image and name
             new_button = ImageButton(source=image_link, size_hint_y=.9)
@@ -57,7 +61,8 @@ class SecondScreen(Screen):
     data = StringProperty('')
     
     def on_enter(self, *args):
-        pass
+        super().on_enter(*args)
+        # moveset = TEKKEN_DOCS.get_character_moveset(self.data)
 
 # Define the screen manager
 class MyScreenManager(ScreenManager):
@@ -66,8 +71,8 @@ class MyScreenManager(ScreenManager):
 class TekkenFrameData(App):
         def build(self):
             sm = MyScreenManager()
-            first_screen = FirstScreen(name='first')
-            second_screen = SecondScreen(name='second')
+            first_screen = FirstScreen()
+            second_screen = SecondScreen()
 
             # Bind the data property from first screen to second screen
             second_screen.bind(data=first_screen.setter('data'))
@@ -77,7 +82,15 @@ class TekkenFrameData(App):
             sm.add_widget(second_screen)
 
             sm.current='first'
+            self.link_scroll_views(second_screen)
             return sm
+        
+        def link_scroll_views(self, second_screen):
+            header_scrollview = second_screen.ids.header_scrollview
+            content_scrollview = second_screen.ids.content_scrollview
+            
+            header_scrollview.sync_view = content_scrollview
+            content_scrollview.sync_view = header_scrollview
 
 
 TekkenFrameData().run()

@@ -6,9 +6,74 @@
 # Define the first screen
 <FirstScreen>:
     name:'first'
-    TekkenGridLayout:
-        screenmanager:root.manager
+    AnchorLayout:
+        anchor_x:'center'
+        anchor_y:'top'
+        AsyncImage:
+            source:'images/tekkendocs-logo.png'
+            size_hint_y:.1
+            size_hint_x:1
+
+    ScrollView:
+        size_hint:1,1
+        size_hint_y:.9
+        CharacterIconLayout:
+            screenmanager:root.manager
+            cols: 3
+            padding:0,0,0,0
+            spacing:10
+            size_hint_y:2
 
 # Define the second screen
 <SecondScreen>:
     name:'second'
+
+    BoxLayout:
+        orientation:'vertical'
+        SyncedScrollView:
+            id:header_scrollview
+            size_hint_y:.1
+            GridLayout:
+                cols:8
+                rows:1
+                size_hint_x:2
+                Label:
+                    text:"Command"
+                Label:
+                    text:"Hit Level"
+                Label:
+                    text:"Damage"
+                Label:
+                    text:"Startup"
+                Label:
+                    text:"Block"
+                Label:
+                    text:"Hit"
+                Label:
+                    text:"Counter Hit"
+                Label:
+                    text:"Notes"
+
+        SyncedScrollView:
+            id:content_scrollview
+            size_hint_y:.9
+            GridLayout:
+                cols:8
+                rows:1
+                size_hint_x:2
+                Label:
+                    text:"Command"
+                Label:
+                    text:"Hit Level"
+                Label:
+                    text:"Damage"
+                Label:
+                    text:"Startup"
+                Label:
+                    text:"Block"
+                Label:
+                    text:"Hit"
+                Label:
+                    text:"Counter Hit"
+                Label:
+                    text:"Notes"
