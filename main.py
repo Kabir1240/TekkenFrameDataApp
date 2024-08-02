@@ -4,11 +4,12 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.image import AsyncImage
 from kivy.uix.button import ButtonBehavior
+from kivy.uix.label import Label
 from kivy.properties import StringProperty
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 
 TEKKEN_DOCS = TekkenDocs()
-CHARACTERS = TEKKEN_DOCS.get_character_data()
 
 
 class ImageButton(ButtonBehavior, AsyncImage):
@@ -19,14 +20,30 @@ class TekkenGridLayout(GridLayout):
         super().__init__(**kwargs)
         self.cols=3
         self.padding=[0,0,0,0]
+        self.spacing=10
     
     def on_kv_post(self, base_widget):
         super().on_kv_post(base_widget)
-        for character in CHARACTERS:
-            image = character["image_link"]
-            new_button = ImageButton(source=image)
-            new_button.bind(on_press=partial(self.go_to_second_screen, character["link"]))
-            self.add_widget(new_button)
+        
+        characters = TEKKEN_DOCS.get_character_data()
+        for character in characters:
+            # get character details
+            name = character["name"].title()
+            image_link = character["image_link"]
+            link = character["link"]
+            
+            # create box layout
+            new_box_layout = BoxLayout(orientation="vertical")
+            
+            # create and add character image and name
+            new_button = ImageButton(source=image_link, size_hint_y=.9)
+            new_button.bind(on_press=partial(self.go_to_second_screen, link))
+            new_label = Label(text=name, size_hint_y=.1)
+            new_box_layout.add_widget(new_button)
+            new_box_layout.add_widget(new_label)
+            
+            # add boxlayout to the TekkenGridLayout
+            self.add_widget(new_box_layout)
     
     def go_to_second_screen(self, link, instance):
         self.screenmanager.get_screen('second').data = link
