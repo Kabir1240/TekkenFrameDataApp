@@ -69,12 +69,18 @@ class FirstScreen(Screen):
 
 class SecondScreen(Screen):
     data = StringProperty('')
+    labels = []
     
     def on_enter(self, *args):
         super().on_enter(*args)
         self.link_scroll_views()
         self.display_moveset()
-        
+    
+    def clear_labels(self):
+        content_grid = self.ids.content_grid
+        for label in self.labels:
+            content_grid.remove_widget(label)
+            
     def link_scroll_views(self):
         header_scrollview = self.ids.header_scrollview
         content_scrollview = self.ids.content_scrollview
@@ -83,6 +89,7 @@ class SecondScreen(Screen):
         content_scrollview.sync_view = header_scrollview
 
     def display_moveset(self):
+        self.clear_labels()
         moveset = TEKKEN_DOCS.get_character_moveset(self.data)
         content_grid = self.ids.content_grid
         for move in moveset:
@@ -158,6 +165,8 @@ class SecondScreen(Screen):
             content_grid.add_widget(hit_label)
             content_grid.add_widget(counter_label)
             content_grid.add_widget(notes_label)
+            
+            self.labels += [command_label, hit_level_label, damage_label, startup_label, block_label, hit_label, counter_label, notes_label]
 
 
 # Define the screen manager
@@ -167,35 +176,34 @@ class MyScreenManager(ScreenManager):
 
 class TekkenFrameData(App):
         def build(self):
-            sm = MyScreenManager()
-            first_screen = FirstScreen()
-            second_screen = SecondScreen()
+            self.sm = MyScreenManager()
+            self.first_screen = FirstScreen()
+            self.second_screen = SecondScreen()
 
             # Bind the data property from first screen to second screen
-            second_screen.bind(data=first_screen.setter('data'))
+            self.second_screen.bind(data=self.first_screen.setter('data'))
             
             # add screens
-            sm.add_widget(first_screen)
-            sm.add_widget(second_screen)
+            self.sm.add_widget(self.first_screen)
+            self.sm.add_widget(self.second_screen)
 
             # Bind the back button press
             Window.bind(on_key_down=self.on_back_button)
-            return sm
+            return self.sm
 
         
         def on_back_button(self, window, key, *args):
             if key == 27:
-                sm = self.root
-                if sm.current == 'second':
-                    self.switch_to_first_screen(sm)
+                self.sm = self.root
+                if self.sm.current == 'second':
+                    self.switch_to_first_screen()
                     return True
             return False
         
         
-        def switch_to_first_screen(self, sm):
-            sm.transition.direction = 'right'
-            sm.current = 'first'
-            sm.remove_widget(sm.get_screen('second'))
+        def switch_to_first_screen(self):
+            self.sm.transition.direction = 'right'
+            self.sm.current = 'first'
 
 
 TekkenFrameData().run()
